@@ -3,9 +3,16 @@ class Game {
   constructor(canvas) {
     this.canvas = canvas; // canavsインスタンス
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
-    this.player = new Player(50, 150); // スタート位置でPlayerインスタンス生成
+
+    // 初期位置　それぞれのクラス内部に定義するのもありだが、一旦ここ
+    this.playerX = this.canvas.width * 0.1; // 左から10%
+    this.playerY = this.canvas.height * 0.5 - 20; // 上下中央
+    this.foodX = this.canvas.width * 0.9; // 右から10%
+    this.foodY = this.canvas.height * 0.8; // 下から20%
+
+    this.player = new Player(this.playerX, this.playerY); // スタート位置でPlayerインスタンス生成
     // this.foods = []; // 餌の配列
-    this.food = new Food(600, 300); // 餌の配列
+    this.food = new Food(this.foodX, this.foodY); // 餌単体
     this.life = 3; // ライフ初期値
     this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
     this.frameCount = 0;
@@ -48,7 +55,7 @@ class Game {
       this.update(); // 状態を更新
       this.draw(); // 表示を更新
     } catch (e) {
-      console.erroe("gameLoop() error:", e);
+      console.error("gameLoop() error:", e);
     }
     // 次のフレームを予約（デフォルト60fps？）
     requestAnimationFrame(() => this.gameLoop());
@@ -58,6 +65,28 @@ class Game {
     this.player.update();
     // this.foods.forEach((food) => food.update());
     this.food.update();
+
+    // 衝突チェック
+    if (this.isColliding(this.player, this.food)) {
+      console.log("餌を取得！");
+      this.life = Math.min(this.life + 1, 5); // ライフを加算（最大5）
+      this.resetFood(); // 餌をリセット
+    }
+  }
+
+  // 衝突判定
+  isColliding(a, b) {
+    return (
+      a.x < b.x + b.width && // （player左端）が（対象物右端）より左
+      a.x + a.width > b.x && // （player右端）が（対象物左端）より右
+      a.y < b.y + b.height && // （player上端）が（対象物下端）より上
+      a.y + a.height > b.y // （player上端）が（対象物上端）より下
+    );
+  }
+
+  // 餌を再出現
+  resetFood() {
+    this.food = new Food(this.foodX, this.foodY);
   }
 
   draw() {
