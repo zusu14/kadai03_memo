@@ -4,6 +4,11 @@ class Game {
     this.canvas = canvas; // canavsインスタンス
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
     this.player = new Player(50, 150); // スタート位置でPlayerインスタンス生成
+    // this.foods = []; // 餌の配列
+    this.food = new Food(600, 300); // 餌の配列
+    this.life = 3; // ライフ初期値
+    this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
+    this.frameCount = 0;
     this.birdsEvents(); // 入力イベントの登録（常に監視するため）
   }
 
@@ -39,14 +44,20 @@ class Game {
   }
 
   gameLoop() {
-    this.update(); // 状態を更新
-    this.draw(); // 表示を更新
+    try {
+      this.update(); // 状態を更新
+      this.draw(); // 表示を更新
+    } catch (e) {
+      console.erroe("gameLoop() error:", e);
+    }
     // 次のフレームを予約（デフォルト60fps？）
     requestAnimationFrame(() => this.gameLoop());
   }
 
   update() {
     this.player.update();
+    // this.foods.forEach((food) => food.update());
+    this.food.update();
   }
 
   draw() {
@@ -54,6 +65,7 @@ class Game {
     this.ctx.fillStyle = "#004466";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.player.draw(this.ctx);
+    this.food.draw(this.ctx);
   }
 }
 
@@ -69,6 +81,3 @@ window.onload = function () {
   const game = new Game(canvas);
   game.start();
 };
-document.addEventListener("keydown", function (e) {
-  console.log("keyDown:", e.key);
-});
