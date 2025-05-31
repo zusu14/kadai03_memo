@@ -10,7 +10,7 @@ class Game {
   // 入力イベント
   birdsEvents() {
     // キーボードイベント（キー押下）
-    // ※アロー関数使わない書き方
+    // ※アロー関数使わない書き方　thisはグローバル変数で定義しなければならない
     document.addEventListener(
       "keydown",
       function (e) {
