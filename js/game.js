@@ -1,9 +1,36 @@
 class Game {
   // Initialize
   constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.canvas = canvas; // canavsインスタンス
+    this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
     this.player = new Player(50, 150); // スタート位置でPlayerインスタンス生成
+    this.birdsEvents(); // 入力イベントの登録（常に監視するため）
+  }
+
+  // 入力イベント
+  birdsEvents() {
+    // キーボードイベント（キー押下）
+    // ※アロー関数使わない書き方
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        console.log("keyDown");
+        if (e.key === "ArrowUp") {
+          this.player.moveUp();
+        } else if (e.key === "ArrowDown") {
+          this.player.moveDown();
+        }
+      }.bind(this) //thisがGameインスタンスであることを明示
+    );
+
+    // キーボードイベント（キーを離した時）
+    // アロー関数（ES6以降はこっち推奨。thisは外側のインスタンスを引き継ぐ）
+    document.addEventListener("keyup", (e) => {
+      console.log("keyUp");
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        this.player.stop();
+      }
+    });
   }
 
   // gameLoop(),update(),draw()はゲーム開発定番の設計パターン
@@ -14,10 +41,7 @@ class Game {
   gameLoop() {
     this.update(); // 状態を更新
     this.draw(); // 表示を更新
-    // 次のフレームを予約（デフォルト60fpx？）
-    // requestAnimationFrame(function () {
-    //   this.gameLoop();
-    // });
+    // 次のフレームを予約（デフォルト60fps？）
     requestAnimationFrame(() => this.gameLoop());
   }
 
@@ -33,9 +57,6 @@ class Game {
   }
 }
 
-// グローバル変数
-let game;
-
 // ページ読み込み後にゲームスタート
 window.onload = function () {
   // jQueryを用いた書き方
@@ -44,22 +65,10 @@ window.onload = function () {
 
   // 純粋なJavaScript
   const canvas = document.getElementById("gameCanvas");
-  game = new Game(canvas);
+  console.log(canvas);
+  const game = new Game(canvas);
   game.start();
 };
-
-// キーボードイベント（キー押下）
 document.addEventListener("keydown", function (e) {
-  if (e.key === "ArrowUp") {
-    game.player.moveUp();
-  } else if (e.key === "ArrowDown") {
-    game.player.moveDown();
-  }
-});
-
-// キーボードイベント（キーを離した時）
-document.addEventListener("keyup", function (e) {
-  if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-    game.player.stop();
-  }
+  console.log("keyDown:", e.key);
 });
