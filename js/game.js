@@ -13,16 +13,22 @@ class Game {
     this.player = new Player(this.playerX, this.playerY); // スタート位置でPlayerインスタンス生成
     // this.foods = []; // 餌の配列
     this.food = new Food(this.foodX, this.foodY); // 餌単体
-    this.life = 3; // ライフ初期値
+
     this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
     this.frameCount = 0;
     this.birdsEvents(); // 入力イベントの登録（常に監視するため）
+
+    // 表示用
+    this.lifeFullImage = new Image();
+    this.lifeFullImage.src = "./images/life_full.png";
+    this.lifeEmptyImage = new Image();
+    this.lifeEmptyImage.src = "./images/life_empty.png";
   }
 
   // 入力イベント
   birdsEvents() {
     // キーボードイベント（キー押下）
-    // ※アロー関数使わない書き方　thisはグローバル変数で定義しなければならない
+    // ※アロー関数使わない書き方　thisは外側のインスタンスを自動的には引き継がない
     document.addEventListener(
       "keydown",
       function (e) {
@@ -67,34 +73,41 @@ class Game {
     this.food.update();
 
     // 衝突チェック
-    if (this.isColliding(this.player, this.food)) {
-      console.log("餌を取得！");
-      this.life = Math.min(this.life + 1, 5); // ライフを加算（最大5）
-      this.resetFood(); // 餌をリセット
+    if (this.player.isColliding(this.food)) {
+      console.log("衝突！");
+      this.player.handleCollision(this.food); // 衝突検出時処理
+      // console.log("残ライフ：", this.player.life);
+      this.resetFood(); // 餌出現　★★★
     }
-  }
-
-  // 衝突判定
-  isColliding(a, b) {
-    return (
-      a.x < b.x + b.width && // （player左端）が（対象物右端）より左
-      a.x + a.width > b.x && // （player右端）が（対象物左端）より右
-      a.y < b.y + b.height && // （player上端）が（対象物下端）より上
-      a.y + a.height > b.y // （player上端）が（対象物上端）より下
-    );
-  }
-
-  // 餌を再出現
-  resetFood() {
-    this.food = new Food(this.foodX, this.foodY);
   }
 
   draw() {
     // 画面をクリアして背景を描く
     this.ctx.fillStyle = "#004466";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.player.draw(this.ctx);
-    this.food.draw(this.ctx);
+    this.player.draw(this.ctx); // プレイヤー表示
+    this.food.draw(this.ctx); // 餌表示
+    this.drawLife(); // ライフ表示
+  }
+
+  // 餌出現
+  resetFood() {
+    this.food = new Food(this.foodX, this.foodY);
+  }
+
+  // ライフ表示
+  drawLife() {
+    const life = this.player.getLife();
+    const lifeX = 20;
+    const lifeY = 20;
+    const spacing = 10;
+    const size = 24;
+
+    for (let i = 0; i < 3; i++) {
+      const img = i < life ? this.lifeFullImage : this.lifeEmptyImag;
+      this.ctx.drawImage(img, lifeX + i * (size + spacing), lifeY, size, size);
+      console.log("life:", life);
+    }
   }
 }
 
