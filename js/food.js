@@ -5,6 +5,7 @@ class Food {
     this.width = 20; // 幅（ピクセル）
     this.height = 20; // 高さ（ピクセル）
     this.speed = 2; // 移動速度
+    this.type = "food";
 
     // 画像の読み込み
     this.image = new Image(); // 組み込みクラス
@@ -19,7 +20,7 @@ class Food {
     if (this.image.complete && this.image.naturalWidth != 0) {
       ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     } else {
-      ctx.fillStyle = "gray";
+      ctx.fillStyle = "yellow";
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }
