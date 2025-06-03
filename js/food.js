@@ -1,18 +1,22 @@
 class Food {
-  constructor(x, y) {
-    this.x = x; // x座標
-    this.y = y; // y座標
-    this.width = 20; // 幅（ピクセル）
-    this.height = 20; // 高さ（ピクセル）
-    this.speed = 2; // 移動速度
+  constructor(canvasWidth, canvasHeight) {
     this.type = "food";
+    this.adaptToCanvasSize(canvasWidth, canvasHeight);
 
     // 画像の読み込み
     this.image = new Image(); // 組み込みクラス
     this.image.src = "./images/dobato.png";
   }
 
-  update() {
+  adaptToCanvasSize(w, h) {
+    this.width = w * 0.05;
+    this.height = h * 0.1;
+    this.speed = w * 0.005;
+    this.x = w;
+    this.y = h * 0.9 - this.height;
+  }
+
+  update(canvasWidth) {
     this.x -= this.speed; // 左に移動
   }
 

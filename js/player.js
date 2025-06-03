@@ -12,10 +12,10 @@ class Player {
 
   // キャンバスサイズに合わせたパラメータ設定
   adaptToCanvasSize(w, h) {
-    this.width = w * 0.05;
-    this.height = h * 0.1;
-    this.speed = h * 0.01; // 移動速さ（絶対値）
-    this.x = w * 0.1; // 画面高さの1%を1フレームあたりの速度とする
+    this.width = w * 0.075;
+    this.height = h * 0.15;
+    this.speed = h * 0.015; // 移動速さ（絶対値）
+    this.x = w * 0.15; // 画面高さの1%を1フレームあたりの速度とする
     this.y = h * 0.5 - this.height / 2;
   }
 
@@ -25,8 +25,8 @@ class Player {
     // 画面外に出ないように制限
     // 原点は左上であることに注意
     if (this.y < 0) this.y = 0; // 上端！
-    if (this.y + this.height > canvasHeight) {
-      this.y = canvasHeight - this.height; // 下端！
+    if (this.y + this.height > canvasHeight * 0.9) {
+      this.y = canvasHeight * 0.9 - this.height; // 下端！
     }
   }
 
@@ -57,9 +57,9 @@ class Player {
   isColliding(obj) {
     return (
       this.x < obj.x + obj.width && // （player左端）が（対象物右端）より左
-      this.x + this.width > obj.x && // （player右端）が（対象物左端）より右
+      this.x + this.width * 0.98 > obj.x * 1.02 && // （player右端から2%左）が（対象物左端から2%右）より右
       this.y < obj.y + obj.height && // （player上端）が（対象物下端）より上
-      this.y + this.height > obj.y // （player上端）が（対象物上端）より下
+      this.y + this.height * 0.98 > obj.y * 1.02 // （player下端から2%上）が（対象物上端から2%した）より下
     );
   }
 

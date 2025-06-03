@@ -5,8 +5,8 @@ class Game {
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
 
     this.player = new Player(this.canvas.width, this.canvas.height);
+    this.food = new Food(this.canvas.width, this.canvas.height);
     // this.foods = []; // 餌の配列
-    this.food = new Food(this.foodX, this.foodY); // 餌単体
 
     this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
     this.frameCount = 0;
@@ -24,6 +24,7 @@ class Game {
     this.width = newWidth;
     this.height = newHeight;
     this.player.adaptToCanvasSize(newWidth, newHeight);
+    this.food.adaptToCanvasSize(newWidth, newHeight);
   }
 
   // 入力イベント
@@ -70,8 +71,8 @@ class Game {
 
   update() {
     this.player.update(this.height);
+    this.food.update(this.width);
     // this.foods.forEach((food) => food.update());
-    this.food.update();
 
     // 衝突チェック
     if (this.player.isColliding(this.food)) {
@@ -79,6 +80,11 @@ class Game {
       this.player.handleCollision(this.food); // 衝突検出時処理
       // console.log("残ライフ：", this.player.life);
       this.resetFood(); // 餌出現　★★★
+    }
+
+    // 画面外へ出たらリセット
+    if (this.food.x + this.food.width < 0) {
+      this.resetFood();
     }
   }
 
@@ -93,20 +99,27 @@ class Game {
 
   // 餌出現
   resetFood() {
-    this.food = new Food(this.foodX, this.foodY);
+    this.food = new Food(this.canvas.width, this.canvas.height);
   }
 
   // ライフ表示
   drawLife() {
     const life = this.player.getLife();
-    const lifeX = 20;
-    const lifeY = 20;
-    const spacing = 10;
-    const size = 24;
+    const lifeX = this.width * 0.01;
+    const lifeY = this.height * 0.01;
+    const spacing = this.width * 0.0;
+    const width = this.width * 0.05;
+    const height = this.height * 0.15;
 
     for (let i = 0; i < 3; i++) {
-      const img = i < life ? this.lifeFullImage : this.lifeEmptyImag;
-      this.ctx.drawImage(img, lifeX + i * (size + spacing), lifeY, size, size);
+      const img = i < life ? this.lifeFullImage : this.lifeEmptyImage;
+      this.ctx.drawImage(
+        img,
+        lifeX + i * (width + spacing),
+        lifeY,
+        width,
+        height
+      );
       console.log("life:", life);
     }
   }
