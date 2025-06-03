@@ -57,7 +57,7 @@ class Player {
   isColliding(obj) {
     return (
       this.x < obj.x + obj.width && // （player左端）が（対象物右端）より左
-      this.x + this.width * 0.98 > obj.x * 1.02 && // （player右端から2%左）が（対象物左端から2%右）より右
+      this.x + this.width * 0.98 > obj.x * 1.4 && // （player右端から2%左）が（対象物左端から40%右）より右
       this.y < obj.y + obj.height && // （player上端）が（対象物下端）より上
       this.y + this.height * 0.98 > obj.y * 1.02 // （player下端から2%上）が（対象物上端から2%した）より下
     );
@@ -65,7 +65,7 @@ class Player {
 
   // 衝突検知時処理
   handleCollision(obj) {
-    if (obj.tipe === "food") {
+    if (obj.type === "food") {
       this.#increaseLife();
       return "food";
     } else if (obj.type === "obstacle") {
