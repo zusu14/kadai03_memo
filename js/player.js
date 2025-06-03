@@ -1,12 +1,8 @@
 class Player {
   // Initialize
-  constructor(x, y) {
-    this.x = x; // x座標
-    this.y = y; // y座標
-    this.width = 40; // 幅（ピクセル）
-    this.height = 40; // 高さ（ピクセル）
-    this.speed = 4; // 移動速度
-    this.dy = 0; // 縦方向速度
+  constructor(canvasWidth, canvasHeight) {
+    this.adaptToCanvasSize(canvasWidth, canvasHeight);
+    this.dy = 0; // 縦方向移動速度
     this.life = 3; // ライフ初期値
 
     // 画像の読み込み
@@ -14,13 +10,24 @@ class Player {
     this.image.src = "./images/ootaka.png";
   }
 
-  update() {
+  // キャンバスサイズに合わせたパラメータ設定
+  adaptToCanvasSize(w, h) {
+    this.width = w * 0.05;
+    this.height = h * 0.1;
+    this.speed = h * 0.01; // 移動速さ（絶対値）
+    this.x = w * 0.1; // 画面高さの1%を1フレームあたりの速度とする
+    this.y = h * 0.5 - this.height / 2;
+  }
+
+  update(canvasHeight) {
     this.y += this.dy; // 縦方向移動
 
     // 画面外に出ないように制限
     // 原点は左上であることに注意
     if (this.y < 0) this.y = 0; // 上端！
-    if (this.y + this.height > 360) this.y = 360 - this.height; // 下端！
+    if (this.y + this.height > canvasHeight) {
+      this.y = canvasHeight - this.height; // 下端！
+    }
   }
 
   draw(ctx) {
