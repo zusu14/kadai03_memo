@@ -4,13 +4,7 @@ class Game {
     this.canvas = canvas; // canavsインスタンス
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
 
-    // 初期位置　それぞれのクラス内部に定義するのもありだが、一旦ここ
-    this.playerX = this.canvas.width * 0.1; // 左から10%
-    this.playerY = this.canvas.height * 0.5 - 20; // 上下中央
-    this.foodX = this.canvas.width * 0.9; // 右から10%
-    this.foodY = this.canvas.height * 0.8; // 下から20%
-
-    this.player = new Player(this.playerX, this.playerY); // スタート位置でPlayerインスタンス生成
+    this.player = new Player(this.canvas.width, this.canvas.height);
     // this.foods = []; // 餌の配列
     this.food = new Food(this.foodX, this.foodY); // 餌単体
 
@@ -23,6 +17,13 @@ class Game {
     this.lifeFullImage.src = "./images/life_full.png";
     this.lifeEmptyImage = new Image();
     this.lifeEmptyImage.src = "./images/life_empty.png";
+  }
+
+  // ウィンドウサイズ変更時
+  updateCanvasSize(newWidth, newHeight) {
+    this.width = newWidth;
+    this.height = newHeight;
+    this.player.adaptToCanvasSize(newWidth, newHeight);
   }
 
   // 入力イベント
@@ -68,7 +69,7 @@ class Game {
   }
 
   update() {
-    this.player.update();
+    this.player.update(this.height);
     // this.foods.forEach((food) => food.update());
     this.food.update();
 
@@ -110,16 +111,3 @@ class Game {
     }
   }
 }
-
-// ページ読み込み後にゲームスタート
-window.onload = function () {
-  // jQueryを用いた書き方
-  //   const $canvas = $("#gameCanvas");
-  //   const canvas = $canvas[0];
-
-  // 純粋なJavaScript
-  const canvas = document.getElementById("gameCanvas");
-  console.log(canvas);
-  const game = new Game(canvas);
-  game.start();
-};

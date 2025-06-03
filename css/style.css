@@ -1,14 +1,24 @@
+html,
 body {
   margin: 0;
+  padding: 0;
   background: #222;
   display: flex;
   justify-content: center;
   align-items: center;
+  /* 明示的に記述するのが一般的 */
+  width: 100vw;
   height: 100vh;
+  /* 画面外にはみ出した場合のスクロール機能防止 */
+  overflow: hidden;
 }
 
 canvas {
-  background: #88a;
   /* canvasはインライン要素 */
   display: block;
+  background: #88a;
+  width: 100vw;
+  height: 100vh;
+  /* アスペクト比を保つ */
+  object-fit: contain;
 }
