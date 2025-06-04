@@ -17,6 +17,12 @@ class Game {
     this.lifeFullImage.src = "./images/life_full.png";
     this.lifeEmptyImage = new Image();
     this.lifeEmptyImage.src = "./images/life_empty.png";
+
+    // タイマー
+    this.gameDuration = 30; // ゲーム時間30秒
+    this.remainingTIme = this.gameDuration;
+    this.startTime = null;
+    this.isGameEnded = false; // ゲーム終了フラグ
   }
 
   // ウィンドウサイズ変更時
@@ -56,6 +62,8 @@ class Game {
 
   // gameLoop(),update(),draw()はゲーム開発定番の設計パターン
   start() {
+    this.startTIme = Date.now();
+    this.remainingTIme = this.gameDuration;
     this.gameLoop();
   }
 
@@ -71,6 +79,14 @@ class Game {
   }
 
   update() {
+    const elapsed = (Date.now() - this.startTIme) / 1000; // 経過時間(ms)
+    this.remainingTIme = this.gameDuration - elapsed;
+
+    if (this.isGameEnded === false && this.remainingTIme <= 0) {
+      this.endGame();
+      return;
+    }
+
     this.background.update();
     this.player.update(this.height);
     this.obstacle.update();
@@ -134,5 +150,19 @@ class Game {
       );
       console.log("life:", life);
     }
+  }
+
+  // 終了処理
+  endGame() {
+    this.isGameEnded = true;
+    this.foodCollected = this.player.life;
+    // 獲得した餌の数をローカルストレージに保存
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD形式
+    localStorage.setItem(`food_${today}`, this.foodCollected); // テンプレートリテラルで変数を使用
+
+    alert(`ゲーム終了！獲得した餌：${this.foodCollected}個`);
+
+    // ホーム画面に移動
+    window.location.href = "home.html";
   }
 }

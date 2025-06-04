@@ -3,7 +3,7 @@ class Player {
   constructor(canvasWidth, canvasHeight) {
     this.adaptToCanvasSize(canvasWidth, canvasHeight);
     this.dy = 0; // 縦方向移動速度
-    this.life = 3; // ライフ初期値
+    this.life = 0; // ライフ初期値
 
     // 画像の読み込み
     this.image = new Image(); // 組み込みクラス
@@ -56,10 +56,10 @@ class Player {
   // 衝突判定
   isColliding(obj) {
     return (
-      this.x < obj.x + obj.width && // （player左端）が（対象物右端）より左
-      this.x + this.width * 0.98 > obj.x * 1.4 && // （player右端から2%左）が（対象物左端から40%右）より右
+      this.x < obj.x + obj.width * 0.95 && // （player左端）が（対象物右端から5%左）より左
+      this.x + this.width * 0.95 > obj.x * 1.05 && // （player右端から5%左）が（対象物左端から5%右）より右
       this.y < obj.y + obj.height && // （player上端）が（対象物下端）より上
-      this.y + this.height * 0.98 > obj.y * 1.02 // （player下端から2%上）が（対象物上端から2%した）より下
+      this.y + this.height * 0.95 > obj.y * 1.05 // （player下端から5%上）が（対象物上端から5%下）より下
     );
   }
 
@@ -86,6 +86,7 @@ class Player {
 
   // ライフ減少（Private）
   #decreaselife(amount = 1) {
-    this.life = Math.max(0, this.life - amount); // 最小０
+    this.life = 0; // 障害物にぶつかったら0にする
+    // this.life = Math.max(0, this.life - amount); // 最小0
   }
 }
