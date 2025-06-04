@@ -12,8 +12,8 @@ class Player {
 
   // キャンバスサイズに合わせたパラメータ設定
   adaptToCanvasSize(w, h) {
-    this.width = w * 0.075;
-    this.height = h * 0.15;
+    this.width = w * 0.08;
+    this.height = h * 0.2;
     this.speed = h * 0.015; // 移動速さ（絶対値）
     this.x = w * 0.15; // 画面高さの1%を1フレームあたりの速度とする
     this.y = h * 0.5 - this.height / 2;

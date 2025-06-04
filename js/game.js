@@ -4,15 +4,15 @@ class Game {
     this.canvas = canvas; // canavsインスタンス
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
 
+    this.background = new Background(this.canvas.width, this.canvas.height);
     this.player = new Player(this.canvas.width, this.canvas.height);
     this.obstacle = this.createRandomObstacle();
-    // this.food = new Food(this.canvas.width, this.canvas.height);
 
     this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
     this.frameCount = 0;
     this.birdsEvents(); // 入力イベントの登録（常に監視するため）
 
-    // 表示用
+    // ライフ表示用
     this.lifeFullImage = new Image();
     this.lifeFullImage.src = "./images/life_full.png";
     this.lifeEmptyImage = new Image();
@@ -23,8 +23,9 @@ class Game {
   updateCanvasSize(newWidth, newHeight) {
     this.width = newWidth;
     this.height = newHeight;
-    this.player.adaptToCanvasSize(newWidth, newHeight);
-    this.obstacle.adaptToCanvasSize(newWidth, newHeight);
+    this.background.adaptToCanvasSize(this.width, this.height);
+    this.player.adaptToCanvasSize(this.width, this.height);
+    this.obstacle.adaptToCanvasSize(this.width, this.height);
   }
 
   // 入力イベント
@@ -70,16 +71,20 @@ class Game {
   }
 
   update() {
+    this.background.update();
     this.player.update(this.height);
     this.obstacle.update();
-    // this.food.update(this.width);
 
     // 衝突チェック
     if (this.player.isColliding(this.obstacle)) {
       console.log("衝突！");
       this.player.handleCollision(this.obstacle); // 衝突検出時処理
       // console.log("残ライフ：", this.player.life);
-      this.resetObstacle(); // 餌出現　★★★
+
+      // 餌ならリセット
+      if (this.obstacle.type === "food") {
+        this.resetObstacle();
+      }
     }
 
     // 画面外へ出たらリセット
@@ -92,9 +97,10 @@ class Game {
     // 画面をクリアして背景を描く
     this.ctx.fillStyle = "#004466";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.player.draw(this.ctx); // プレイヤー表示
-    this.obstacle.draw(this.ctx); // 餌表示
-    this.drawLife(); // ライフ表示
+    this.background.draw(this.ctx);
+    this.player.draw(this.ctx);
+    this.obstacle.draw(this.ctx);
+    this.drawLife();
   }
 
   // 餌出現
@@ -104,7 +110,7 @@ class Game {
 
   // 障害物ランダム生成
   createRandomObstacle() {
-    const types = ["food", "house", "buildign", "frog"];
+    const types = ["food", "house", "building", "frog"];
     const kind = types[Math.floor(Math.random() * types.length)];
     return new Obstacle(this.canvas.width, this.canvas.height, kind);
   }
@@ -113,9 +119,9 @@ class Game {
     const life = this.player.getLife();
     const lifeX = this.width * 0.01;
     const lifeY = this.height * 0.01;
-    const spacing = this.width * 0.0;
-    const width = this.width * 0.05;
-    const height = this.height * 0.15;
+    const spacing = this.width * 0.01;
+    const width = this.width * 0.04;
+    const height = this.height * 0.1;
 
     for (let i = 0; i < 3; i++) {
       const img = i < life ? this.lifeFullImage : this.lifeEmptyImage;
