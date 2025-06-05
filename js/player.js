@@ -20,12 +20,12 @@ class Player {
 
   // キャンバスサイズに合わせたパラメータ設定
   adaptToCanvasSize(w, h) {
-    this.scale = 0.35;
+    this.scale = 0.15;
     this.height = h * this.scale;
     this.width = this.height * this.aspectRatio;
     this.x = w * 0.15;
     this.y = h * 0.5 - this.height / 2;
-    this.speed = h * 0.02;
+    this.speed = h * 0.01;
   }
 
   setHitBox() {
@@ -55,14 +55,14 @@ class Player {
     // 画像が読み込み未完了の場合は四角形を描写
     if (this.image.complete && this.image.naturalWidth != 0) {
       ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+      // ヒットボックス（テスト用）
+      ctx.strokeStyle = "red";
+      ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
     } else {
-      ctx.fillStyle = "white";
-      ctx.fillRect(this.x, this.y, this.width, this.height);
+      return;
+      // ctx.fillStyle = "white";
+      // ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-
-    // ヒットボックス（テスト用）
-    ctx.strokeStyle = "red";
-    ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
   }
 
   moveUp() {
