@@ -7,7 +7,8 @@ class Game {
     // 各インスタンス生成
     this.background = new Background(this.canvas.width, this.canvas.height);
     this.player = new Player(this.canvas.width, this.canvas.height);
-    this.obstacle = this.createRandomObstacle();
+    // this.obstacle = this.createRandomObstacle();
+    this.obstacle = new Obstacle(this.canvas.width, this.canvas.height, "food");
 
     this.spanInterval = 120; // 何フレーム毎に餌出現させるか（fps）
     this.frameCount = 0;
@@ -84,10 +85,10 @@ class Game {
     this.remainingTime = this.gameDuration - elapsed;
 
     // ゲーム終了時
-    if (this.isGameEnded === false && this.remainingTime <= 0) {
-      this.endGame();
-      return;
-    }
+    // if (this.isGameEnded === false && this.remainingTime <= 0) {
+    //   this.endGame();
+    //   return;
+    // }
 
     this.background.update();
     this.obstacle.update();
