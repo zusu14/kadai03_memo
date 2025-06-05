@@ -15,9 +15,9 @@ class Game {
 
     // ライフ表示用
     this.lifeFullImage = new Image();
-    this.lifeFullImage.src = "./images/life_full.png";
-    this.lifeEmptyImage = new Image();
-    this.lifeEmptyImage.src = "./images/life_empty.png";
+    this.lifeFullImage.src = "./images/donut.png";
+    // this.lifeEmptyImage = new Image();
+    // this.lifeEmptyImage.src = "./images/life_empty.png";
 
     // タイマー
     this.gameDuration = 30; // ゲーム時間30秒
@@ -83,11 +83,11 @@ class Game {
     const elapsed = (Date.now() - this.startTime) / 1000; // 経過時間(ms)
     this.remainingTime = this.gameDuration - elapsed;
 
-    // ゲーム終了時
-    // if (this.isGameEnded === false && this.remainingTime <= 0) {
-    //   this.endGame();
-    //   return;
-    // }
+    // ゲーム終了時;
+    if (this.isGameEnded === false && this.remainingTime <= 0) {
+      this.endGame();
+      return;
+    }
 
     this.background.update();
     this.obstacle.update();
@@ -133,23 +133,25 @@ class Game {
     // const kind = types[0]; // テスト用
     return new Obstacle(this.canvas.width, this.canvas.height, kind);
   }
-  // ライフ表示
+
+  // 獲得した餌表示
   drawLife() {
     const life = this.player.getLife();
-    const lifeX = this.width * 0.01;
-    const lifeY = this.height * 0.01;
-    const spacing = this.width * 0.01;
-    const width = this.width * 0.04;
-    const height = this.height * 0.1;
+    this.lifeScale = 0.08;
+    this.lifeHeight = this.height * this.lifeScale;
+    this.lifeWidth = this.lifeHeight;
+    this.lifeX = this.width * 0.01;
+    this.lifeY = this.height * 0.01;
+    this.lifeSpacing = this.width * 0.01;
 
-    for (let i = 0; i < 3; i++) {
-      const img = i < life ? this.lifeFullImage : this.lifeEmptyImage;
+    for (let i = 0; i < life; i++) {
+      // const img = i < life ? this.lifeFullImage : this.lifeEmptyImage;
       this.ctx.drawImage(
-        img,
-        lifeX + i * (width + spacing),
-        lifeY,
-        width,
-        height
+        this.lifeFullImage,
+        this.lifeX + i * (this.lifeWidth + this.lifeSpacing),
+        this.lifeY,
+        this.lifeWidth,
+        this.lifeHeight
       );
       console.log("life:", life);
     }
@@ -158,14 +160,26 @@ class Game {
   // 終了処理
   endGame() {
     this.isGameEnded = true;
-    this.foodCollected = this.player.life;
-    // 獲得した餌の数をローカルストレージに保存
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD形式
-    localStorage.setItem(`food_${today}`, this.foodCollected); // テンプレートリテラルで変数を使用
 
-    alert(`ゲーム終了！獲得した餌：${this.foodCollected}個`);
+    // 既存の獲得数を取得（ない場合は0）
+    const stored = localStorage.getItem(`food_${today}`);
+    const alreadyCollected = stored ? parseInt(stored, 10) : 0;
+
+    // 今回の獲得数（制限を考慮）
+    const maxDaily = 3;
+    const remaining = maxDaily - alreadyCollected;
+    const newlyCollected = Math.min(this.player.life, remaining);
+
+    // 保存
+    const updatedTotal = alreadyCollected + newlyCollected;
+    localStorage.setItem(`food_${today}`, updatedTotal);
+
+    alert(
+      `ゲーム終了！今回獲得できた餌：${newlyCollected}個\n本日の合計：${updatedTotal}個（最大${maxDaily}個）`
+    );
 
     // ホーム画面に移動
-    window.location.href = "home.html";
+    window.location.href = "index.html";
   }
 }
