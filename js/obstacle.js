@@ -3,7 +3,6 @@ class Obstacle {
     this.kind = kind;
     // food以外はobstacleを代入
     this.type = kind === "food" ? "food" : "obstacle";
-    this.adaptToCanvasSize(canvasWidth, canvasHeight);
 
     // 種類ごとの画像を指定
     this.image = new Image();
@@ -20,36 +19,56 @@ class Obstacle {
       case "frog":
         this.image.src = "./images/frog.png";
         break;
+      case "helicopter":
+        this.image.src = "./images/helicopter.png";
+        break;
     }
+
+    // サイズ等パラメータ指定
+    this.image.onload = () => {
+      // onloadで読み込み後でないと取得できない
+      this.aspectRatio = this.image.naturalWidth / this.image.naturalHeight; // 元画像のアスペクト比
+      this.adaptToCanvasSize(canvasWidth, canvasHeight);
+    };
   }
 
   adaptToCanvasSize(w, h) {
-    // this.speed = w * 0.01;
-    this.x = w;
+    this.x = w; // 右端から描画スタート
 
     switch (this.kind) {
       case "food":
-        this.width = w * 0.05;
-        this.height = h * 0.1;
+        this.scale = 0.1;
+        this.height = h * this.scale;
+        this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
         this.speed = w * 0.011;
         break;
       case "house":
-        this.width = w * 0.225;
-        this.height = h * 0.4;
+        this.scale = 0.3;
+        this.height = h * this.scale;
+        this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.01; // backgroundと合わせる
+        this.speed = w * 0.01;
         break;
       case "building":
-        this.width = w * 0.12;
-        this.height = h * 0.65;
+        this.scale = 0.65;
+        this.height = h * this.scale;
+        this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.01; // backgroundと合わせる
+        this.speed = w * 0.01;
         break;
       case "frog":
-        this.width = w * 0.05;
-        this.height = h * 0.1;
+        this.scale = 0.1;
+        this.height = h * this.scale;
+        this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
+        this.speed = w * 0.011;
+        break;
+      case "helicopter":
+        this.scale = 0.25;
+        this.height = h * this.scale;
+        this.width = this.height * this.aspectRatio;
+        this.y = h * 0.1;
         this.speed = w * 0.011;
         break;
     }
