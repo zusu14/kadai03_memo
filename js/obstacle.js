@@ -30,7 +30,6 @@ class Obstacle {
       // onloadで読み込み後でないと取得できない
       this.aspectRatio = this.image.naturalWidth / this.image.naturalHeight; // 元画像のアスペクト比
       this.adaptToCanvasSize(canvasWidth, canvasHeight);
-      console.log("this.aspectRatio", this.aspectRatio);
     };
   }
 
@@ -93,16 +92,11 @@ class Obstacle {
     if (this.image.complete && this.image.naturalWidth != 0) {
       ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
       // ヒットボックス（テスト用）
-      ctx.strokeStyle = "red";
-      ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
-
-      console.log("this.x", this.x);
-      console.log("this.width", this.width);
+      // ctx.strokeStyle = "red";
+      // ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
     } else {
       console.log("obstacle draw else");
       return;
-      // ctx.fillStyle = this.kind === "food" ? "yellow" : "red";
-      // ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }
 }

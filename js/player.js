@@ -56,12 +56,10 @@ class Player {
     if (this.image.complete && this.image.naturalWidth != 0) {
       ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
       // ヒットボックス（テスト用）
-      ctx.strokeStyle = "red";
-      ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
+      // ctx.strokeStyle = "red";
+      // ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
     } else {
       return;
-      // ctx.fillStyle = "white";
-      // ctx.fillRect(this.x, this.y, this.width, this.height);
     }
   }
 
