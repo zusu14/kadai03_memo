@@ -25,7 +25,7 @@ class Player {
     this.width = this.height * this.aspectRatio;
     this.x = w * 0.15;
     this.y = h * 0.5 - this.height / 2;
-    this.speed = h * 0.01;
+    this.speed = h * 0.011;
   }
 
   setHitBox() {

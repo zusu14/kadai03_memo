@@ -11,7 +11,7 @@ class Background {
   adaptToCanvasSize(w, h) {
     this.width = w;
     this.height = h;
-    this.speed = w * 0.01;
+    this.speed = w * 0.012;
   }
 
   update() {

@@ -42,35 +42,35 @@ class Obstacle {
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.011;
+        this.speed = w * 0.014;
         break;
       case "house":
         this.scale = 0.3;
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.01;
+        this.speed = w * 0.012; // backgroundと同じにする
         break;
       case "building":
         this.scale = 0.65;
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.01;
+        this.speed = w * 0.012; // backgroundと同じにする
         break;
       case "frog":
         this.scale = 0.1;
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.9 - this.height;
-        this.speed = w * 0.011;
+        this.speed = w * 0.014;
         break;
       case "helicopter":
         this.scale = 0.25;
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.1;
-        this.speed = w * 0.013;
+        this.speed = w * 0.015;
         break;
     }
   }
