@@ -82,10 +82,11 @@ class Game {
     const elapsed = (Date.now() - this.startTIme) / 1000; // 経過時間(ms)
     this.remainingTIme = this.gameDuration - elapsed;
 
-    if (this.isGameEnded === false && this.remainingTIme <= 0) {
-      this.endGame();
-      return;
-    }
+    // ゲーム終了時
+    // if (this.isGameEnded === false && this.remainingTIme <= 0) {
+    //   this.endGame();
+    //   return;
+    // }
 
     this.background.update();
     this.player.update(this.height);
@@ -126,8 +127,9 @@ class Game {
 
   // 障害物ランダム生成
   createRandomObstacle() {
-    const types = ["food", "house", "building", "frog"];
+    const types = ["food", "house", "building", "frog", "helicopter"];
     const kind = types[Math.floor(Math.random() * types.length)];
+    // const kind = types[0]; // テスト用
     return new Obstacle(this.canvas.width, this.canvas.height, kind);
   }
   // ライフ表示
