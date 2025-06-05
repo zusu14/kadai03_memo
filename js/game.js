@@ -4,6 +4,7 @@ class Game {
     this.canvas = canvas; // canavsインスタンス
     this.ctx = canvas.getContext("2d"); // canvasに描画を行うインターフェース
 
+    // 各インスタンス生成
     this.background = new Background(this.canvas.width, this.canvas.height);
     this.player = new Player(this.canvas.width, this.canvas.height);
     this.obstacle = this.createRandomObstacle();
@@ -20,7 +21,7 @@ class Game {
 
     // タイマー
     this.gameDuration = 30; // ゲーム時間30秒
-    this.remainingTIme = this.gameDuration;
+    this.remainingTime = this.gameDuration;
     this.startTime = null;
     this.isGameEnded = false; // ゲーム終了フラグ
   }
@@ -30,8 +31,8 @@ class Game {
     this.width = newWidth;
     this.height = newHeight;
     this.background.adaptToCanvasSize(this.width, this.height);
-    this.player.adaptToCanvasSize(this.width, this.height);
     this.obstacle.adaptToCanvasSize(this.width, this.height);
+    this.player.adaptToCanvasSize(this.width, this.height);
   }
 
   // 入力イベント
@@ -41,7 +42,7 @@ class Game {
     document.addEventListener(
       "keydown",
       function (e) {
-        console.log("keyDown");
+        // console.log("keyDown");
         if (e.key === "ArrowUp") {
           this.player.moveUp();
         } else if (e.key === "ArrowDown") {
@@ -53,7 +54,7 @@ class Game {
     // キーボードイベント（キーを離した時）
     // アロー関数（ES6以降はこっち推奨。thisは外側のインスタンスを引き継ぐ）
     document.addEventListener("keyup", (e) => {
-      console.log("keyUp");
+      // console.log("keyUp");
       if (e.key === "ArrowUp" || e.key === "ArrowDown") {
         this.player.stop();
       }
@@ -62,8 +63,8 @@ class Game {
 
   // gameLoop(),update(),draw()はゲーム開発定番の設計パターン
   start() {
-    this.startTIme = Date.now();
-    this.remainingTIme = this.gameDuration;
+    this.startTime = Date.now();
+    this.remainingTime = this.gameDuration;
     this.gameLoop();
   }
 
@@ -79,18 +80,18 @@ class Game {
   }
 
   update() {
-    const elapsed = (Date.now() - this.startTIme) / 1000; // 経過時間(ms)
-    this.remainingTIme = this.gameDuration - elapsed;
+    const elapsed = (Date.now() - this.startTime) / 1000; // 経過時間(ms)
+    this.remainingTime = this.gameDuration - elapsed;
 
     // ゲーム終了時
-    // if (this.isGameEnded === false && this.remainingTIme <= 0) {
-    //   this.endGame();
-    //   return;
-    // }
+    if (this.isGameEnded === false && this.remainingTime <= 0) {
+      this.endGame();
+      return;
+    }
 
     this.background.update();
-    this.player.update(this.height);
     this.obstacle.update();
+    this.player.update(this.height);
 
     // 衝突チェック
     if (this.player.isColliding(this.obstacle)) {
@@ -115,8 +116,8 @@ class Game {
     this.ctx.fillStyle = "#004466";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.background.draw(this.ctx);
-    this.player.draw(this.ctx);
     this.obstacle.draw(this.ctx);
+    this.player.draw(this.ctx);
     this.drawLife();
   }
 

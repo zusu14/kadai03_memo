@@ -2,7 +2,7 @@
 // 初期表示時と画面サイズ変更時にGameクラスに通知する
 
 const canvas = document.getElementById("gameCanvas");
-const game = new Game(canvas);
+const game = new Game(canvas); // Gameクラスのインスタンス生成
 
 // 画面サイズ変更時処理
 function resizeCanvas() {

@@ -4,19 +4,36 @@ class Player {
     this.adaptToCanvasSize(canvasWidth, canvasHeight);
     this.dy = 0; // 縦方向移動速度
     this.life = 0; // ライフ初期値
+    this.hitBoxMargin = 0.2; // ヒットボックス縮小用マージン
 
     // 画像の読み込み
     this.image = new Image(); // 組み込みクラス
     this.image.src = "./images/ootaka.png";
+
+    // サイズ等パラメータ指定
+    this.image.onload = () => {
+      // onloadで読み込み後でないと取得できない
+      this.aspectRatio = this.image.naturalWidth / this.image.naturalHeight; // 元画像のアスペクト比
+      this.adaptToCanvasSize(canvasWidth, canvasHeight);
+    };
   }
 
   // キャンバスサイズに合わせたパラメータ設定
   adaptToCanvasSize(w, h) {
-    this.width = w * 0.08;
-    this.height = h * 0.2;
-    this.speed = h * 0.015; // 移動速さ（絶対値）
-    this.x = w * 0.15; // 画面高さの1%を1フレームあたりの速度とする
+    this.scale = 0.35;
+    this.height = h * this.scale;
+    this.width = this.height * this.aspectRatio;
+    this.x = w * 0.15;
     this.y = h * 0.5 - this.height / 2;
+    this.speed = h * 0.02;
+  }
+
+  setHitBox() {
+    // ヒットボックス
+    this.hitBoxX = this.x + (this.width * this.hitBoxMargin) / 2;
+    this.hitBoxY = this.y + (this.height * this.hitBoxMargin) / 2;
+    this.hitBoxW = this.width * (1 - this.hitBoxMargin);
+    this.hitBoxH = this.height * (1 - this.hitBoxMargin);
   }
 
   update(canvasHeight) {
@@ -28,6 +45,9 @@ class Player {
     if (this.y + this.height > canvasHeight * 0.9) {
       this.y = canvasHeight * 0.9 - this.height; // 下端！
     }
+
+    // ヒットボックス計算
+    this.setHitBox();
   }
 
   draw(ctx) {
@@ -39,6 +59,10 @@ class Player {
       ctx.fillStyle = "white";
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+
+    // ヒットボックス（テスト用）
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
   }
 
   moveUp() {
@@ -55,21 +79,22 @@ class Player {
 
   // 衝突判定
   isColliding(obj) {
+    // 判定
     return (
-      this.x < obj.x + obj.width * 0.95 && // （player左端）が（対象物右端から5%左）より左
-      this.x + this.width * 0.95 > obj.x * 1.05 && // （player右端から5%左）が（対象物左端から5%右）より右
-      this.y < obj.y + obj.height && // （player上端）が（対象物下端）より上
-      this.y + this.height * 0.95 > obj.y * 1.05 // （player下端から5%上）が（対象物上端から5%下）より下
+      this.hitBoxX < obj.hitBoxX + obj.hitBoxW &&
+      this.hitBoxX + this.hitBoxW > obj.hitBoxX &&
+      this.hitBoxY < obj.hitBoxY + obj.hitBoxH &&
+      this.hitBoxY + this.hitBoxH > obj.hitBoxY
     );
   }
 
   // 衝突検知時処理
   handleCollision(obj) {
     if (obj.type === "food") {
-      this.#increaseLife();
+      this._increaseLife();
       return "food";
     } else if (obj.type === "obstacle") {
-      this.#decreaselife();
+      this._decreaselife();
       return "obstacle";
     }
     return null;
@@ -80,13 +105,13 @@ class Player {
   }
 
   // ライフ増加（Private）
-  #increaseLife(amount = 1) {
+  _increaseLife(amount = 1) {
     this.life = Math.min(3, this.life + amount); // 最大3
   }
 
   // ライフ減少（Private）
-  #decreaselife(amount = 1) {
+  _decreaselife(amount = 1) {
     this.life = 0; // 障害物にぶつかったら0にする
-    // this.life = Math.max(0, this.life - amount); // 最小0
+    // this.life = Math.mthis.hitBoxX(0, this.life - amount); // 最小0
   }
 }
