@@ -3,6 +3,7 @@ class Obstacle {
     this.kind = kind;
     // food以外はobstacleを代入
     this.type = kind === "food" ? "food" : "obstacle";
+    this.hitBoxMargin = 0.2; // ヒットボックス縮小用マージン
 
     // 種類ごとの画像を指定
     this.image = new Image();
@@ -69,13 +70,22 @@ class Obstacle {
         this.height = h * this.scale;
         this.width = this.height * this.aspectRatio;
         this.y = h * 0.1;
-        this.speed = w * 0.011;
+        this.speed = w * 0.013;
         break;
     }
   }
 
+  setHitBox() {
+    // ヒットボックス
+    this.hitBoxX = this.x + (this.width * this.hitBoxMargin) / 2;
+    this.hitBoxY = this.y + (this.height * this.hitBoxMargin) / 2;
+    this.hitBoxW = this.width * (1 - this.hitBoxMargin);
+    this.hitBoxH = this.height * (1 - this.hitBoxMargin);
+  }
+
   update() {
     this.x -= this.speed;
+    this.setHitBox(); // ヒットボックス計算
   }
 
   draw(ctx) {
@@ -85,5 +95,9 @@ class Obstacle {
       ctx.fillStyle = this.kind === "food" ? "yellow" : "red";
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
+
+    // ヒットボックス（テスト用）
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(this.hitBoxX, this.hitBoxY, this.hitBoxW, this.hitBoxH);
   }
 }
