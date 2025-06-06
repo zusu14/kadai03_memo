@@ -4,139 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>フライング・ラプター</title>
-    <style>
-      body {
-        font-family: "Segoe UI", sans-serif;
-        background-color: #f0f8ff;
-        margin: 0;
-        padding: 20px;
-        text-align: center;
-      }
-
-      h1 {
-        margin-bottom: 10px;
-      }
-
-      #calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .day {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        padding: 5px;
-        border-radius: 8px;
-        min-height: 80px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        font-size: 14px;
-      }
-
-      .donuts {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 5px;
-      }
-
-      .donuts img {
-        width: 20px;
-        height: 20px;
-        margin: 1px;
-      }
-
-      .button-group {
-        margin-top: 20px;
-      }
-
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #ff69b4;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        margin: 5px;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-      }
-
-      button:hover {
-        background-color: #ff85c1;
-      }
-    </style>
+    <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
     <h1>えさ獲得カレンダー</h1>
     <p>1日に最大3つまで獲得できます。</p>
-
     <div id="calendar"></div>
-
     <div class="button-group">
       <button onclick="location.href='game.html'">狩りに行く</button>
+      <!-- html側でクリック時のJavascript呼び出し関数を指定　インラインイベントハンドラ -->
       <button onclick="clearHistory()">履歴をクリア</button>
     </div>
-
-    <script>
-      function renderCalendar() {
-        const calendar = document.getElementById("calendar");
-        calendar.innerHTML = ""; // 初期化
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth(); // 0-indexed
-        const firstDay = new Date(year, month, 1).getDay();
-        const lastDate = new Date(year, month + 1, 0).getDate();
-
-        for (let i = 0; i < firstDay; i++) {
-          const blank = document.createElement("div");
-          blank.className = "day";
-          calendar.appendChild(blank);
-        }
-
-        for (let d = 1; d <= lastDate; d++) {
-          const dateStr = `${year}-${(month + 1)
-            .toString()
-            .padStart(2, "0")}-${d.toString().padStart(2, "0")}`;
-          const food = parseInt(localStorage.getItem(`food_${dateStr}`)) || 0;
-
-          const dayDiv = document.createElement("div");
-          dayDiv.className = "day";
-          dayDiv.innerHTML = `<div>${d}</div>`;
-
-          const donutDiv = document.createElement("div");
-          donutDiv.className = "donuts";
-
-          for (let i = 0; i < Math.min(food, 3); i++) {
-            const img = document.createElement("img");
-            img.src = "./images/donut.png";
-            img.alt = "ドーナツ";
-            donutDiv.appendChild(img);
-          }
-
-          dayDiv.appendChild(donutDiv);
-          calendar.appendChild(dayDiv);
-        }
-      }
-
-      function clearHistory() {
-        if (confirm("本当にすべての獲得履歴を削除しますか？")) {
-          for (let key in localStorage) {
-            if (key.startsWith("food_")) {
-              localStorage.removeItem(key);
-            }
-          }
-          alert("履歴を削除しました。");
-          renderCalendar(); // 再描画
-        }
-      }
-
-      // 初期表示
-      renderCalendar();
-    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="./js/home.js"></script>
   </body>
 </html>
