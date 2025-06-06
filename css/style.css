@@ -12,6 +12,7 @@ h1 {
 
 #calendar {
   display: grid;
+  /* 7日で改行、幅均等割*/
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
   margin-top: 20px;
